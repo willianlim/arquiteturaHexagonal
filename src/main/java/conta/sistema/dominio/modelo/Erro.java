@@ -10,11 +10,11 @@ public class Erro {
         throw new NegocioException(nome + " é inexistente.");
     }
 
-    public static void saldoInsuficiente(String nome) {
+    public static void saldoInsuficiente() {
         throw new NegocioException("Saldo insulficiente.");
     }
 
-    public static void mesmaConta(String nome) {
+    public static void mesmaConta() {
         throw new NegocioException("Conta débito e crédito devem ser diferentes.");
     }
 }

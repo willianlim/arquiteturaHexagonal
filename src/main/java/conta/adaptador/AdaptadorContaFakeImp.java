@@ -6,6 +6,7 @@ import conta.sistema.dominio.porta.ContaRepositorio;
 
 import javax.inject.Named;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,6 +17,11 @@ import static java.util.Objects.isNull;
 public class AdaptadorContaFakeImp implements ContaRepositorio {
 
     private Map<Integer, Conta> banco = new HashMap<>();
+
+    public AdaptadorContaFakeImp() {
+        banco.put(10, new Conta(10, new BigDecimal(100), "Fernand Fake"));
+        banco.put(20, new Conta(20, new BigDecimal(100), "Rebeca Fake"));
+    }
 
     @Override
     public Conta get(Integer numero) {

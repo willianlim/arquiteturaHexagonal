@@ -21,6 +21,73 @@ public class TesteDebitoConta {
     }
 
     @Test
-    void creditar() {
+    @DisplayName("Valor débito nulo como obrigatório.")
+    void teste1() {
+        try {
+            contaValida.debitar(null);
+//            fail("Valor crédito obrigatório");
+        } catch (NegocioException exception) {
+            assertEquals(exception.getMessage(), "Valor débito é obrigatório.");
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor débito negativo como obrigatório.")
+    void teste2() {
+        try {
+            contaValida.debitar(new BigDecimal(-10));
+//            fail("Valor crédito obrigatório");
+        } catch (NegocioException exception) {
+            assertEquals(exception.getMessage(), "Valor débito é obrigatório.");
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor débito zero como obrigatório.")
+    void teste3() {
+        try {
+            contaValida.debitar(BigDecimal.ZERO);
+//            fail("Valor crédito obrigatório");
+        } catch (NegocioException exception) {
+            assertEquals(exception.getMessage(), "Valor débito é obrigatório.");
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor débito acima do saldo.")
+    void teste4() {
+        try {
+            contaValida.debitar(cem.add(BigDecimal.ONE));
+            fail("Valor débito acima do saldo.");
+        } catch (NegocioException exception) {
+            assertEquals(exception.getMessage(), "Saldo insulficiente.");
+            System.out.println(exception.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor débito igual ao saldo.")
+    void teste5() {
+        try {
+            contaValida.debitar(cem);
+            assertEquals(contaValida.getSaldo(), BigDecimal.ZERO, "Saldo deve zerar.");
+        } catch (NegocioException exception) {
+            fail("Deve debitar com sucesso - " + exception.getMessage());
+        }
+    }
+
+    @Test
+    @DisplayName("Valor débito menor do saldo.")
+    void teste6() {
+        try {
+            contaValida.debitar(BigDecimal.TEN);
+            var contaFinal = cem.subtract(BigDecimal.TEN);
+            assertEquals(contaValida.getSaldo(), contaFinal, "Saldo deve zerar.");
+        } catch (NegocioException exception) {
+            fail("Deve debitar com sucesso - " + exception.getMessage());
+        }
     }
 }

@@ -38,6 +38,7 @@ public class Conta {
         if (debito.compareTo(saldo) > 0) {
             saldoInsuficiente();
         }
+        saldo = saldo.subtract(debito);
     }
 
     public Integer getNumero() {

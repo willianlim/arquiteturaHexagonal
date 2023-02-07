@@ -2,18 +2,66 @@ package conta.sistema.casouso.imp;
 
 import conta.sistema.casouso.porta.PortaTransferencia;
 import conta.sistema.dominio.modelo.Conta;
+import conta.sistema.dominio.servico.Transferencia;
+import conta.sistema.porta.ContaRepositorio;
+import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.math.BigDecimal;
 
+import static conta.sistema.dominio.modelo.Erro.*;
+import static java.util.Objects.isNull;
+
+@Named
 public class PortaTranferenciaImp implements PortaTransferencia {
 
-    @Override
-    public Conta getConta(Integer numero) {
-        return null;
+    private ContaRepositorio repositorio;
+    private Transferencia transferencia;
+
+    @Inject
+    public PortaTranferenciaImp(ContaRepositorio repositorio, Transferencia transferencia) {
+        this.repositorio = repositorio;
+        this.transferencia = transferencia;
     }
 
     @Override
-    public void transferencia(Integer contaDebito, Integer contaCredito, BigDecimal valor) {
+    public Conta getConta(Integer numero) {
+        return repositorio.get(numero);
+    }
 
+    @Override
+    @Transactional
+    public void transferencia(Integer contaDebito, Integer contaCredito, BigDecimal valor) {
+        // 1. Validação de parametros
+        if (isNull(contaDebito)) {
+            obrigatorio("Conta débito");
+        }
+        if (isNull(contaCredito)) {
+            obrigatorio("Conta crédito");
+        }
+        if (isNull(valor)) {
+            obrigatorio("Valor");
+        }
+
+        // 2. Validação das contas
+        var debito = repositorio.get(contaDebito);
+        if (isNull(debito)) {
+            inexistente("Conta débito");
+        }
+        var credito = repositorio.get(contaCredito);
+        if (isNull(credito)) {
+            inexistente("Conta crédito");
+        }
+
+        // 3. Validação da mesma conta
+        if (debito.getNumero().equals(credito.getNumero())) {
+            mesmaConta();
+        }
+
+        // 4. Operação
+        transferencia.transferencia(valor, debito, credito);
+        repositorio.alterar(debito);
+        repositorio.alterar(credito);
     }
 }

@@ -1,10 +1,11 @@
-package conta.sistema.dominio.servico;
+package teste.unidade.dominio.servico;
 
 import conta.sistema.dominio.modelo.Conta;
 import conta.sistema.dominio.modelo.NegocioException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import conta.sistema.dominio.servico.Transferencia;
 
 import java.math.BigDecimal;
 
